@@ -142,7 +142,7 @@ app.post(path, function(req, res) {
           res.statusCode = 500;
           res.json({error: err, url: req.url, body: req.body});
         } else{
-          res.json({success: 'Loan created, please save loanId', url: req.url, data: data})
+          res.json({success: 'Loan created, please save loanId: ' + loanId, url: req.url, data: data})
         }
       });
     });
