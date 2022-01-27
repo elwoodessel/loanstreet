@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'S3 Bucket For LoanStreet Lambda'
+Resources:
+  LoanStreetLambdaBucket:
+    Type: AWS::S3::Bucket
+    Description: Bucket for LoanStreet Lambda Function to make calls to dynamodb
+    Properties:
+      BucketName: loan-street-lambda-bucket
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        -
+          Key: project
+          Value: loanstreet
+Outputs:
+  LoanStreetLambdaBucket:
+    Description: Bucket for LoanStreet Lambda Function
+    Value: !Ref LoanStreetLambdaBucket
+    Export: 
+      Name: LoanStreetLambdaBucket
+      

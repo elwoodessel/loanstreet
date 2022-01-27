@@ -5,6 +5,7 @@ Resources:
   LoanStreetLoanTable:
     Type: AWS::DynamoDB::Table
     Properties:
+      TableName: LoanStreetTable
       AttributeDefinitions:
         -
           AttributeName: "loanId"
@@ -21,6 +22,8 @@ Resources:
           Key: project
           Value: loanstreet
 Outputs:
-  TableName:
+  LoanStreetTableName:
     Value: !Ref LoanStreetLoanTable
     Description: Table for creating and modifying loans
+    Export:
+      Name: LoanStreetTableName
