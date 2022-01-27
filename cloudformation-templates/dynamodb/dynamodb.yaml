@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Table for creating and modifying loans
+
+Resources:
+  LoanStreetLoanTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: LoanStreetTable
+      AttributeDefinitions:
+        -
+          AttributeName: "loanId"
+          AttributeType: "N"
+      KeySchema:
+        -
+          AttributeName: "loanId"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      Tags:
+        -
+          Key: project
+          Value: loanstreet
+Outputs:
+  LoanStreetTableName:
+    Value: !Ref LoanStreetLoanTable
+    Description: Table for creating and modifying loans
+    Export:
+      Name: LoanStreetTableName
