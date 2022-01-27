@@ -65,6 +65,7 @@ app.put(path, function(req, res) {
   let loanId = req.body.loanId;
 
   if (!amount || !interestRate || !monthlyPayment || !loanLength || !loanId) {
+    console.log('parameter error');
     res.statusCode = 500;
     res.json({error: 'Required parameter missing'});
   }
@@ -82,9 +83,11 @@ app.put(path, function(req, res) {
 
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {
+      console.log('dynamo error');
       res.statusCode = 500;
       res.json({error: err, url: req.url, body: req.body});
     } else{
+      console.log('dynamo success');
       res.json({success: 'Loan successfully update', url: req.url, data: data})
     }
   });
@@ -101,6 +104,7 @@ app.post(path, function(req, res) {
   let loanLength = req.body.length;
   
   if (!amount || !interestRate || !monthlyPayment || !loanLength) {
+    console.log('parameter error');
     res.statusCode = 500;
     res.json({error: 'Required parameter missing'});
   }
@@ -113,6 +117,7 @@ app.post(path, function(req, res) {
 
   dynamodb.scan(params, (err, data) => {
     if (err) {
+      console.log('dynamo load error');
       res.json({ error: 'Could not load items: ' + err.message });
     }
       loanId = +(data.Count) + 1;
@@ -128,9 +133,11 @@ app.post(path, function(req, res) {
       }
       dynamodb.put(putItemParams, (err, data) => {
         if(err) {
+          console.log('dynamo put error');
           res.statusCode = 500;
           res.json({error: err, url: req.url, body: req.body});
         } else{
+          console.log('dynamo success error');
           res.json({success: 'Loan created, please save loanId: ' + loanId, url: req.url, data: data})
         }
       });

@@ -1,0 +1,89 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  LambdaFunctionArn:
+    Type: String
+Resources:
+  ApiGateway:
+    Type: "AWS::ApiGateway::RestApi"
+    Properties:
+      Name: "LoanStreetApi"
+      Description: "API to Create or Modify Loans"
+      Body:
+        swagger: '2.0'
+        info:
+          version: '2022-01-26T17:52:00Z'
+          title: loanstreetapi
+        host:
+          Fn::Join:
+          - ''
+          - - apigateway.
+            - Ref: AWS::Region
+            - ".amazonaws.com"
+        schemes:
+        - https
+        paths:
+          "/loans":
+            x-amazon-apigateway-any-method:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              parameters:
+              - in: body
+                name: RequestSchema
+                required: false
+                schema:
+                  "$ref": "#/definitions/RequestSchema"
+              responses:
+                '200':
+                  description: 200 response
+                  schema:
+                    "$ref": "#/definitions/ResponseSchema"
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: '200'
+                uri:
+                  Fn::Join:
+                  - ''
+                  - - 'arn:aws:apigateway:'
+                    - Ref: AWS::Region
+                    - ":lambda:path/2015-03-31/functions/"
+                    - Ref: LambdaFunctionArn
+                    - "/invocations"
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+        securityDefinitions:
+          sigv4:
+            type: apiKey
+            name: Authorization
+            in: header
+            x-amazon-apigateway-authtype: awsSigv4
+        definitions:
+          RequestSchema:
+            type: object
+            required:
+            - request
+            properties:
+              request:
+                type: string
+            title: Request Schema
+          ResponseSchema:
+            type: object
+            required:
+            - response
+            properties:
+              response:
+                type: string
+            title: Response Schema
+      Description: ''
+      FailOnWarnings: true
+      Name: loanstreet
+  LambdaApiGatewayInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref LambdaFunctionArn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*
