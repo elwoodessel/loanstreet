@@ -1,1 +1,2 @@
-./lambda/node_modules
+/cloudformation-templates/lambda/node_modules
+.DS_Store
