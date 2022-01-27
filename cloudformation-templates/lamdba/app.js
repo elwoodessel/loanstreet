@@ -25,12 +25,13 @@ app.use(function(req, res, next) {
   let interestRate = req.query.rate;
   let monthlyPayment = req.query.monthly;
   let loanLength = req.query.length;
-  let loan = {};
+  let loan;
+
   if (!amount || !interestRate || !monthlyPayment || !loanLength) {
     res.statusCode = 500;
     res.json({error: 'Required parameter missing'});
   }
-  
+
   var params = {
     TableName: tableName,
     Select: 'ALL_ATTRIBUTES',
@@ -38,10 +39,10 @@ app.use(function(req, res, next) {
 
   dynamodb.scan(params, (err, data) => {
     if (err) {
-      res.json({ error: 'Could not load items: ' + err.message });
+      res.json({error: 'Error fetching loans from db'});
     }
-
     data.Items.forEach(item => {
+        console.log('item', item);
         if (item.amount == amount 
             && item.interestRate == interestRate 
             && item.monthlyPayment == monthlyPayment 
@@ -50,9 +51,9 @@ app.use(function(req, res, next) {
             }
     });
     if (loan)
-        res.json({data: loan});
+      res.json({data: loan});
     else
-        res.json({error: 'Could not find matching loan'});
+      res.json({error: 'Could not find matching loan or an error has occurred'});
   });
 });
 
@@ -61,10 +62,32 @@ app.use(function(req, res, next) {
 *************************************/
 
 app.put(path, function(req, res) {
+  let amount = req.body.amount;
+  let interestRate = req.body.rate;
+  let monthlyPayment = req.body.monthly;
+  let loanLength = req.body.length;
+  let loanId = req.body.loanId;
+
+  console.log('amount', amount);
+  console.log('interestRate', interestRate);
+  console.log('monthlyPayment', monthlyPayment);
+  console.log('loanLength', loanLength);
+  console.log('loanId', loanId);
+
+  if (!amount || !interestRate || !monthlyPayment || !loanLength || !loanId) {
+    res.statusCode = 500;
+    res.json({error: 'Required parameter missing'});
+  }
 
   let putItemParams = {
     TableName: tableName,
-    Item: req.body
+    Item: {
+        amount: amount,
+        interestRate: interestRate,
+        monthlyPayment: monthlyPayment,
+        loanLength: loanLength,
+        loanId: loanId
+    }
   }
 
   dynamodb.put(putItemParams, (err, data) => {
@@ -72,7 +95,7 @@ app.put(path, function(req, res) {
       res.statusCode = 500;
       res.json({error: err, url: req.url, body: req.body});
     } else{
-      res.json({success: 'put call succeed!', url: req.url, data: data})
+      res.json({success: 'Loan successfully update', url: req.url, data: data})
     }
   });
 });
@@ -82,27 +105,51 @@ app.put(path, function(req, res) {
 *************************************/
 
 app.post(path, function(req, res) {
-
-  let putItemParams = {
-    TableName: tableName,
-    Item: req.body
+  let amount = req.body.amount;
+  let interestRate = req.body.rate;
+  let monthlyPayment = req.body.monthly;
+  let loanLength = req.body.length;
+  
+  if (!amount || !interestRate || !monthlyPayment || !loanLength) {
+    res.statusCode = 500;
+    res.json({error: 'Required parameter missing'});
   }
 
-  dynamodb.put(putItemParams, (err, data) => {
-    if(err) {
-      res.statusCode = 500;
-      res.json({error: err, url: req.url, body: req.body});
-    } else{
-      res.json({success: 'post call succeed!', url: req.url, data: data})
+  let loanId = 0;
+  const params = {
+    TableName: tableName,
+      Select: "COUNT",
+  }; 
+
+  dynamodb.scan(params, (err, data) => {
+    if (err) {
+      res.json({ error: 'Could not load items: ' + err.message });
     }
-  });
+      console.log('count', data);
+      loanId = +(data.Count) + 1;
+      let putItemParams = {
+        TableName: tableName,
+        Item: {
+          amount: amount,
+          interestRate: interestRate,
+          monthlyPayment: monthlyPayment,
+          loanLength: loanLength,
+          loanId: loanId
+        }
+      }
+      dynamodb.put(putItemParams, (err, data) => {
+        if(err) {
+          res.statusCode = 500;
+          res.json({error: err, url: req.url, body: req.body});
+        } else{
+          res.json({success: 'Loan created, please save loanId', url: req.url, data: data})
+        }
+      });
+    });
 });
 
 app.listen(3000, function() {
     console.log("App started")
 });
 
-// Export the app object. When executing the application local this does nothing. However,
-// to port it to AWS Lambda we will create a wrapper around that will load the app from
-// this file
 module.exports = app
