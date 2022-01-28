@@ -1,0 +1,123 @@
+{
+	"info": {
+		"_postman_id": "4aac65e2-e8e7-4789-bbc4-0d36e459696e",
+		"name": "loanstreet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET loan",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://og7ge4yn26.execute-api.us-east-2.amazonaws.com/DEV/loans?amount=50000&interestRate=19.7&monthlyPayment=300&loanLength=5",
+					"protocol": "https",
+					"host": [
+						"og7ge4yn26",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"DEV",
+						"loans"
+					],
+					"query": [
+						{
+							"key": "amount",
+							"value": "50000"
+						},
+						{
+							"key": "interestRate",
+							"value": "19.7"
+						},
+						{
+							"key": "monthlyPayment",
+							"value": "300"
+						},
+						{
+							"key": "loanLength",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Loan",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\":23000.0,\"interestRate\":0.051,\"monthlyPayment\":300.0,\"loanLength\":7}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://og7ge4yn26.execute-api.us-east-2.amazonaws.com/DEV/loans",
+					"protocol": "https",
+					"host": [
+						"og7ge4yn26",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"DEV",
+						"loans"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Modify Loan",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\":23001.0,\"interestRate\":0.051,\"monthlyPayment\":300.0,\"loanLength\":7, \"loanId\":8}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://og7ge4yn26.execute-api.us-east-2.amazonaws.com/DEV/loans",
+					"protocol": "https",
+					"host": [
+						"og7ge4yn26",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"DEV",
+						"loans"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
