@@ -22,9 +22,9 @@ app.use(function(req, res, next) {
 
  app.get(path, function (req, res) {
   let amount = req.query.amount;
-  let interestRate = req.query.rate;
-  let monthlyPayment = req.query.monthly;
-  let loanLength = req.query.length;
+  let interestRate = req.query.interestRate;
+  let monthlyPayment = req.query.monthlyPayment;
+  let loanLength = req.query.loanLength;
   let loan = {};
 
   if (!amount || !interestRate || !monthlyPayment || !loanLength) {
@@ -49,7 +49,7 @@ app.use(function(req, res, next) {
                 loan = item;
             }
     });
-    res.json({data: loan});
+    res.json(loan);
   });
 });
 
@@ -59,9 +59,9 @@ app.use(function(req, res, next) {
 
 app.put(path, function(req, res) {
   let amount = req.body.amount;
-  let interestRate = req.body.rate;
-  let monthlyPayment = req.body.monthly;
-  let loanLength = req.body.length;
+  let interestRate = req.body.interestRate;
+  let monthlyPayment = req.body.monthlyPayment;
+  let loanLength = req.body.loanLength;
   let loanId = req.body.loanId;
 
   if (!amount || !interestRate || !monthlyPayment || !loanLength || !loanId) {
@@ -85,7 +85,7 @@ app.put(path, function(req, res) {
       res.statusCode = 500;
       res.json({error: err, url: req.url, body: req.body});
     } else{
-      res.json({success: 'Loan successfully update', url: req.url, data: data})
+      res.json({success: 'Loan successfully updated', url: req.url, data: data})
     }
   });
 });
@@ -96,9 +96,9 @@ app.put(path, function(req, res) {
 
 app.post(path, function(req, res) {
   let amount = req.body.amount;
-  let interestRate = req.body.rate;
-  let monthlyPayment = req.body.monthly;
-  let loanLength = req.body.length;
+  let interestRate = req.body.interestRate;
+  let monthlyPayment = req.body.monthlyPayment;
+  let loanLength = req.body.loanLength;
   
   if (!amount || !interestRate || !monthlyPayment || !loanLength) {
     res.statusCode = 500;
